@@ -30,14 +30,11 @@ class CommentView(mixins.RetrieveModelMixin,
     authentication_classes=[BasicAuthentication,SessionAuthentication]
 
 
-
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-
-
 
     def patch(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
