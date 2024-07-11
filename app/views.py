@@ -10,11 +10,18 @@ class BlogView(generics.ListCreateAPIView):
     serializer_class = Blogserializers
     authentication_classes=[TokenAuthentication]
 
-    
+class BlogListView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = Blogserializers
+    authentication_classes=[TokenAuthentication]
+
+class CommentListView(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = Commentserializers
+    authentication_classes=[BasicAuthentication,SessionAuthentication]  
 
 class CommentView(mixins.RetrieveModelMixin,
                   mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
                 mixins.UpdateModelMixin,
                 mixins.DestroyModelMixin,
                 generics.GenericAPIView):
@@ -38,9 +45,13 @@ class CommentView(mixins.RetrieveModelMixin,
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+class LikeListView(generics.ListCreateAPIView):
+    queryset = Like.objects.all()
+    serializer_class = Likeserializers
+    authentication_classes=[BasicAuthentication,SessionAuthentication]  
+
 class LikeView(mixins.RetrieveModelMixin,
                   mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
                 mixins.UpdateModelMixin,
                 mixins.DestroyModelMixin,
                 generics.GenericAPIView):
