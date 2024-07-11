@@ -5,24 +5,58 @@ from rest_framework.authentication import  BasicAuthentication,SessionAuthentica
 from rest_framework import generics
 from rest_framework import mixins
 
-class BlogView(mixins.ListModelMixin,
-               mixins.CreateModelMixin,generics.GenericAPIView):
+class BlogView(generics.ListCreateAPIView):
     queryset = Blog.objects.all()
     serializer_class = Blogserializers
+    authentication_classes=[TokenAuthentication]
+
+    
+
+class CommentView(mixins.RetrieveModelMixin,
+                  mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                mixins.UpdateModelMixin,
+                mixins.DestroyModelMixin,
+                generics.GenericAPIView):
+    queryset=Comment.objects.all()
+    serializer_class = Commentserializers
     authentication_classes=[BasicAuthentication,SessionAuthentication]
 
+
+
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-class CommentView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = Commentserializers
-    authentication_classes=[BasicAuthentication,SessionAuthentication]
 
-class LikeView(generics.RetrieveUpdateDestroyAPIView):
+
+    def patch(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class LikeView(mixins.RetrieveModelMixin,
+                  mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                mixins.UpdateModelMixin,
+                mixins.DestroyModelMixin,
+                generics.GenericAPIView):
     queryset = Like.objects.all()
     serializer_class = Likeserializers
     authentication_classes=[BasicAuthentication,SessionAuthentication]
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = Like.objects.filter(blog_id=self.kwargs['pk'])
+        return queryset
